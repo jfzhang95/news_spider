@@ -79,7 +79,8 @@ class SinaNewsSpider(CrawlSpider):
     start_urls = ['http://news.sina.com.cn']
     # http://finance.sina.com.cn/review/hgds/2017-08-25/doc-ifykkfas7684775.shtml
     # url_pattern = r'(http://(?:\w+\.)*news\.sina\.com\.cn)/.*/(\d{4}-\d{2}-\d{2})/doc-(.*)\.shtml'
-    url_pattern = r'(http://(?:\w+\.)*news\.sina\.com\.cn)/.*/(2017-08-26)/doc-(.*)\.shtml'
+    today_date = time.strftime('%Y-%m-%d',time.localtime(time.time()))
+    url_pattern = r'(http://(?:\w+\.)*news\.sina\.com\.cn)/.*/({})/doc-(.*)\.shtml'.format(today_date)
 
     rules = [
         Rule(LxmlLinkExtractor(allow=[url_pattern]), callback='parse_news', follow=True)
