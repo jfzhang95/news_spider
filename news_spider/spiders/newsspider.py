@@ -14,6 +14,7 @@ from scrapy.selector import Selector
 import json
 import re
 from scrapy import Request
+import time
 
 def ListCombiner(lst):
     string = ""
@@ -39,9 +40,9 @@ class NeteaseNewsSpider(CrawlSpider):
         pattern = re.match(self.url_pattern, str(response.url))
         source = 'news.163.com'
         if sel.xpath('//div[@class="post_time_source"]/text()'):
-            time = sel.xpath('//div[@class="post_time_source"]/text()').extract_first().split()[0] + ' ' + sel.xpath('//div[@class="post_time_source"]/text()').extract_first().split()[1]
+            time_ = sel.xpath('//div[@class="post_time_source"]/text()').extract_first().split()[0] + ' ' + sel.xpath('//div[@class="post_time_source"]/text()').extract_first().split()[1]
         else:
-            time = 'unknown'
+            time_ = 'unknown'
         date = '20' + pattern.group(2) + '/' + pattern.group(3)[0:2] + '/' + pattern.group(3)[2:]
         newsId = pattern.group(4)
         url = response.url
@@ -54,7 +55,7 @@ class NeteaseNewsSpider(CrawlSpider):
                                                              'url':url,
                                                              'title':title,
                                                              'contents':contents,
-                                                             'time':time
+                                                             'time':time_
                                                              })
 
     def parse_comment(self, response):
@@ -77,8 +78,8 @@ class SinaNewsSpider(CrawlSpider):
     allowed_domains = ['news.sina.com.cn']
     start_urls = ['http://news.sina.com.cn']
     # http://finance.sina.com.cn/review/hgds/2017-08-25/doc-ifykkfas7684775.shtml
-    url_pattern = r'(http://(?:\w+\.)*news\.sina\.com\.cn)/.*/(\d{4}-\d{2}-\d{2})/doc-(.*)\.shtml'
-    # url_pattern = r'(http://(?:\w+\.)*news\.sina\.com\.cn)/.*/(2017-08-25)/doc-(.*)\.shtml'
+    # url_pattern = r'(http://(?:\w+\.)*news\.sina\.com\.cn)/.*/(\d{4}-\d{2}-\d{2})/doc-(.*)\.shtml'
+    url_pattern = r'(http://(?:\w+\.)*news\.sina\.com\.cn)/.*/(2017-08-26)/doc-(.*)\.shtml'
 
     rules = [
         Rule(LxmlLinkExtractor(allow=[url_pattern]), callback='parse_news', follow=True)
@@ -92,9 +93,9 @@ class SinaNewsSpider(CrawlSpider):
             source = pattern.group(1)
             date = pattern.group(2).replace('-','/')
             if sel.xpath('//span[@class="time-source"]/text()'):
-                time = sel.xpath('//span[@class="time-source"]/text()').extract_first().split()[0]
+                time_ = sel.xpath('//span[@class="time-source"]/text()').extract_first().split()[0]
             else:
-                time = 'unknown'
+                time_ = 'unknown'
             newsId = pattern.group(3)
             url = response.url
             contents = ListCombiner(sel.xpath('//p/text()').extract()[:-3])
@@ -108,7 +109,7 @@ class SinaNewsSpider(CrawlSpider):
                                                                  'url':url,
                                                                  'title':title,
                                                                  'contents':contents,
-                                                                 'time':time
+                                                                 'time':time_
                                                                 })
 
     def parse_comment(self, response):
@@ -155,9 +156,9 @@ class TencentNewsSpider(CrawlSpider):
         newsId = pattern.group(3)
         url = response.url
         if sel.xpath('//*[@id="Main-Article-QQ"]/div/div[1]/div[1]/div[1]/div/div[1]/span[3]/text()'):
-            time = sel.xpath('//*[@id="Main-Article-QQ"]/div/div[1]/div[1]/div[1]/div/div[1]/span[3]/text()').extract()[0]
+            time_ = sel.xpath('//*[@id="Main-Article-QQ"]/div/div[1]/div[1]/div[1]/div/div[1]/span[3]/text()').extract()[0]
         else:
-            time = 'unknown'
+            time_ = 'unknown'
         contents = ListCombiner(sel.xpath('//p/text()').extract()[:-8])
 
         if response.xpath('//*[@id="Main-Article-QQ"]/div/div[1]/div[2]/script[2]/text()'):
@@ -171,12 +172,12 @@ class TencentNewsSpider(CrawlSpider):
                                                                      'url': url,
                                                                      'title': title,
                                                                      'contents': contents,
-                                                                     'time': time
+                                                                     'time': time_
                                                                      })
             else:
                 item = NewsItem()
                 item['source'] = source
-                item['time'] = time
+                item['time'] = time_
                 item['date'] = date
                 item['contents'] = contents
                 item['title'] = title
