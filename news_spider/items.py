@@ -5,7 +5,6 @@
 # See documentation in:
 # http://doc.scrapy.org/en/latest/topics/items.html
 
-import scrapy
 from scrapy import Item, Field
 
 class NewsItem(Item):
@@ -20,3 +19,18 @@ class NewsItem(Item):
     url = Field()
     comments = Field()
     time = Field()
+
+
+class TencentRollNewsItem(Item):
+    # define the fields for your item here like:
+    # name = scrapy.Field()
+    url = Field()
+    date = Field()
+    time = Field()
+    title = Field()
+    newsId = Field()
+    contents = Field()
+    comments = Field()
+    source = Field()
+    column = Field()
+    category = Field()

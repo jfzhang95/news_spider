@@ -15,19 +15,18 @@ class NewsSpiderPipeline(object):
         self.current_dir = os.getcwd()
 
     def process_item(self, item, spider):
-        dir_path = self.current_dir + '/docs' + item['source'] + '/' + item['date']
+        dir_path = os.path.join(self.current_dir, 'news', item['source'], item['date'].replace('/', '-'))
         if not os.path.exists(dir_path):
             os.makedirs(dir_path)
-        news_file_path = dir_path + '/' + item['newsId'] + '.json'
+        news_file_path = os.path.join(dir_path, item['newsId'] + '.json')
         if os.path.exists(news_file_path) and os.path.isfile(news_file_path):
             print('---------------------------------------')
             print(item['newsId'] + '.json exists, not overriden')
             print('---------------------------------------')
             return item
 
-
         news_file = codecs.open(news_file_path, 'w', 'gbk')
-        line = json.dumps(dict(item))
+        line = json.dumps(dict(item), ensure_ascii=False)
         news_file.write(line)
         news_file.close()
         return item

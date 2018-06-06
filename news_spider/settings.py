@@ -68,6 +68,17 @@ ITEM_PIPELINES = {
    'news_spider.pipelines.NewsSpiderPipeline': 300,
 }
 
+
+DEFAULT_REQUEST_HEADERS = {
+    # 'Accept': '*/*',
+    'Accept-Language': 'zh-CN,zh;q=0.8',
+    'Accept-Encoding': 'gzip, deflate',
+    'Connection': 'keep-alive',
+    # 'Host': 'roll.news.qq.com',
+    # 'Referer': 'http://tech.qq.com/articleList/rolls/',
+    'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.101 Safari/537.36',
+}
+
 # Enable and configure the AutoThrottle extension (disabled by default)
 # See http://doc.scrapy.org/en/latest/topics/autothrottle.html
 #AUTOTHROTTLE_ENABLED = True
